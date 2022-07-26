@@ -11,9 +11,9 @@ o objectivo é consumir a api <a>restcountries.com</a> e exportar os dados em di
     - xls
 
 # Demonstração
-Para testar a aplicação e suas funcionalidades o link é <a>restapp</a>  
+Para testar a aplicação e suas funcionalidades o link é <a href="https://62e0710e558b3502529489c2--jazzy-cucurucho-088bbe.netlify.app/">Rest Client C#</a>  
 
-#Testes
+# Testes
 * primeiro instalar o SDK .NETna versao 6.0
 * ter o dotnet instalado
 * na pasta raiz do projecto executar o comando dotnet restore (para instalar dependencias do projecto)
