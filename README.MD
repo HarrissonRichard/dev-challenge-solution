@@ -14,9 +14,9 @@ o objectivo é consumir a api <a herf="https://restcountries.com/">restcountries
 O link para testar a aplicação e suas funcionalidades é <a href="https://62e0710e558b3502529489c2--jazzy-cucurucho-088bbe.netlify.app/">Rest Client C#</a>  
 
 # Testes
-* 1. requisitos: .NET SDK versao 6.0
-* 2. na pasta raiz do projecto executar o comando dotnet restore (para instalar dependencias do projecto)
-* 3. inicar a aplicação com o comando dotnet run e acessar o link <a herf="https://localhost:7065"> https://localhost:7065 </a> para testar a aplicação localmente.
+* 1. requisitos: .NET SDK versão 6.0
+* 2. na pasta raiz do projecto executar o comando <b>dotnet run</b> para iniciar a aplicação.
+* 3. acessar através do navegador link <a herf="https://localhost:7065"> https://localhost:7065 </a> para testar a aplicação localmente.
 
 # Sobre mim
 Harrisson Richard
