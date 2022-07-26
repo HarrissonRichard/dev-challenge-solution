@@ -1,0 +1,249 @@
+﻿@page "/"
+@inject ICountryData CountryData
+@inject IJSRuntime JS
+@using System.IO
+@using System.Text
+@using System.Xml
+
+<PageTitle>Countries Challenge</PageTitle>
+
+@if (countries is not null)
+{
+    <div class="container.text-center">
+
+        <div class="row">
+            <h3 class="display-3">Lista de todos os paises</h3>
+
+            <div class="col-md-8">
+                <button class="btn btn-primary" @onclick="DownloadFileFromStreamXls">exportar XLS</button>
+                <button class="btn btn-success" @onclick="DownloadFileFromStreamCsv">exportar CSV</button>
+                <button class="btn btn-warning" @onclick="DownloadFileFromStreamXml">exportar XML</button>
+            </div>
+        </div>
+
+        <div class="row gy-5">
+            <div class="col-md-8">
+                <table class="table">
+                    <thead>
+                        <th>nome</th>
+                        <th>capital</th>
+                        <th>região</th>
+                        <th>sub-região</th>
+                        <th>população</th>
+                        <th>área</th>
+                        <th>fuso horário</th>
+                        <th>nome nativo</th>
+                        <th>#</th>
+                    </thead>
+                    <tbody>
+                        @foreach (var country in countries)
+                        {
+                            <tr>
+                                <td>
+                                    @country.Name.Official
+                                </td>
+                                <td>
+                                    @if (country.Capital.Length == 0)
+                                    {
+                                        <p>Sem capital</p>
+                                    }
+                                    else
+                                    {
+                                        <p> @country.Capital[0]</p>
+                                    }
+
+                                </td>
+                                <td>
+                                    @country.Region
+                                </td>
+                                <td>
+                                    @country.SubRegion
+                                </td>
+                                <td>
+                                    @country.Population
+                                </td>
+                                <td>
+                                    @country.Area
+                                </td>
+                                <td>
+                                    @country.TimeZones[0]
+                                </td>
+                                <td>
+                                    @country.Name.Common
+                                </td>
+                                <td>
+                                    <a href='@country.Flags.png'>Ver Bandeira de @country.Name.Official</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+
+@code {
+
+    private List<CountryModel> countries;
+    protected override async Task OnInitializedAsync()
+    {
+        countries = await CountryData.GetAllCountries();
+    }
+
+    private async Task DownloadFileFromStreamXls()
+    {
+        var dt = GetCountriesDetails();
+        var fileStream = ExportDataToXls(dt);
+        var fileName = "paises.xls";
+        var byteStream = fileStream.ToArray();
+        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, byteStream);
+    }
+    private async Task DownloadFileFromStreamCsv()
+    {
+
+        var dt = GetCountriesDetails();
+        var byteStream = ExportDataToCsv(dt);
+        var fileName = "paises.csv";
+        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, byteStream);
+    }
+    private async Task DownloadFileFromStreamXml()
+    {
+
+        var dt = GetCountriesDetails();
+        var byteStream = ExportDataToXml(dt);
+        var fileName = "paises.xml";
+        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, byteStream);
+    }
+
+
+    private byte[] ExportDataToXml(DataTable countries)
+    {
+        var listCountries = (from DataRow row in countries.Rows
+
+                             select new CountryModelToXml()
+                             {
+                                 Name = Convert.ToString(row["nome"]),
+                                 Capital = Convert.ToString(row["capital"]),
+                                 Region = Convert.ToString(row["regiao"]),
+                                 SubRegion = Convert.ToString(row["subRegiao"]),
+                                 Population = Convert.ToInt32(row["populacao"]),
+                                 Area = Convert.ToDouble(row["area"]),
+                                 Flags = Convert.ToString(row["bandeira"]),
+                                 TimeZones = Convert.ToString(row["fusoHorario"])
+
+
+                             }).ToList();
+
+        XmlDocument xml = new XmlDocument();
+        XmlElement root = xml.CreateElement("Paises");
+        xml.AppendChild(root);
+
+
+        foreach (var country in listCountries)
+        {
+            XmlElement child = xml.CreateElement("Pais");
+            child.SetAttribute("Nome", country.Name);
+            child.SetAttribute("Capital", country.Capital);
+            child.SetAttribute("Regiao", country.Region);
+            child.SetAttribute("SubRegiao", country.SubRegion);
+            child.SetAttribute("Populacao", country.Population.ToString());
+            child.SetAttribute("Area", country.Area.ToString());
+            child.SetAttribute("FusoHorario", country.TimeZones);
+            child.SetAttribute("Bandeira", country.Flags);
+            root.AppendChild(child);
+        }
+        byte[] byteArray = ASCIIEncoding.ASCII.GetBytes(xml.OuterXml.ToString());
+        return byteArray;
+    }
+
+
+    private MemoryStream ExportDataToXls(DataTable countries)
+    {
+        using (var workbook = new XLWorkbook())
+        {
+            var worksheet = workbook.Worksheets.Add("Countries");
+            var currentRow = 1;
+            worksheet.Cell(currentRow, 1).Value = "nome";
+            worksheet.Cell(currentRow, 2).Value = "capital";
+            worksheet.Cell(currentRow, 3).Value = "regiao";
+            worksheet.Cell(currentRow, 4).Value = "subRegiao";
+            worksheet.Cell(currentRow, 5).Value = "populacao";
+            worksheet.Cell(currentRow, 6).Value = "area";
+            worksheet.Cell(currentRow, 7).Value = "fusoHorario";
+            worksheet.Cell(currentRow, 8).Value = "bandeira";
+
+
+            for (int i = 0; i < countries.Rows.Count; i++)
+            {
+                {
+                    currentRow++;
+                    worksheet.Cell(currentRow, 1).Value = countries.Rows[i]["nome"];
+                    worksheet.Cell(currentRow, 2).Value = countries.Rows[i]["capital"];
+                    worksheet.Cell(currentRow, 3).Value = countries.Rows[i]["regiao"];
+                    worksheet.Cell(currentRow, 4).Value = countries.Rows[i]["subRegiao"];
+                    worksheet.Cell(currentRow, 5).Value = countries.Rows[i]["populacao"];
+                    worksheet.Cell(currentRow, 6).Value = countries.Rows[i]["area"];
+                    worksheet.Cell(currentRow, 7).Value = countries.Rows[i]["fusoHorario"];
+                    worksheet.Cell(currentRow, 8).Value = countries.Rows[i]["bandeira"];
+
+                }
+            }
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            return stream;
+        }
+    }
+
+    private DataTable GetCountriesDetails()
+    {
+        var conts = countries;
+
+        DataTable dtCountries = new DataTable("CountriesDetails");
+        dtCountries.Columns.AddRange(new DataColumn[8]
+        {
+new DataColumn("nome"),
+new DataColumn("capital"),
+new DataColumn("regiao"),
+new DataColumn("subRegiao"),
+new DataColumn("populacao"),
+new DataColumn("area"),
+new DataColumn("fusoHorario"),
+new DataColumn("bandeira")
+        });
+        foreach (var country in countries)
+        {
+            var capital = "sem capital";
+            if (country.Capital.Length != 0)
+            {
+                capital = country.Capital[0];
+            }
+            dtCountries.Rows.Add(country.Name.Official, capital, country.Region, country.SubRegion, country.Population,
+            country.Area,
+            country.TimeZones[0], country.Flags.png);
+        }
+
+        return dtCountries;
+    }
+
+
+    private byte[] ExportDataToCsv(DataTable countries)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        IEnumerable<string> columnNames = countries.Columns.Cast<DataColumn>().
+        Select(column => column.ColumnName);
+        sb.AppendLine(string.Join(",", columnNames));
+
+        foreach (DataRow row in countries.Rows)
+        {
+            IEnumerable<string> fields = row.ItemArray.Select(field =>
+            string.Concat("\"", field.ToString().Replace("\"", "\"\""), "\""));
+            sb.AppendLine(string.Join(",", fields));
+        }
+        byte[] byteArray = ASCIIEncoding.ASCII.GetBytes(sb.ToString());
+
+        return byteArray;
+    }
+}
