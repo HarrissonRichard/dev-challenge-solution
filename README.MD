@@ -3,6 +3,7 @@
 o desáfio pede para consumir a api <a herf="https://restcountries.com/">restcountries.com</a>  visualizar e exportar os dados dos países em diversos formatos.
 
 # Funcionalidades
+a presente aplicação apresenta as seguintes funcionalidades
 * Visualizar propriedades dos países disponibilizados pela api <a herf="https://restcountries.com/">https://restcountries.com/</a>
 * fornecer link de visualização a bandeira de cada país
 * exportar os dados dos paises em formatos:
