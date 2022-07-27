@@ -1,5 +1,5 @@
 #  Desafio para criar um Rest Cliente em C#
-* A aplicação foi desenvolvida em C# com as tecnologias Blazor WebAssembly App - para criar o cliente e o pacote <a href="https://github.com/reactiveui/refit">Refit</a>para consumir a Api.
+* A aplicação foi desenvolvida em C# com as tecnologias Blazor WebAssembly App - para criar o cliente e o pacote <a href="https://github.com/reactiveui/refit">Refit</a> para consumir a Api.
 * O desáfio pede para consumir a api <a herf="https://restcountries.com/">restcountries.com</a>  visualizar e exportar os dados dos países em diversos formatos.
 
 # Funcionalidades:
