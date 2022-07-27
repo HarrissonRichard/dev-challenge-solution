@@ -11,7 +11,7 @@ o desáfio pede para consumir a api <a herf="https://restcountries.com/">restcou
     - xls
 
 # Demonstração
-O link para testar a aplicação e suas funcionalidades é <a href="https://62e0710e558b3502529489c2--jazzy-cucurucho-088bbe.netlify.app/">Rest Client C#</a>  
+O link para testar a aplicação e suas funcionalidades é <a href="https://rest-countries-c-sharp.netlify.app/">Rest Client C#</a>  
 
 # Testes
 * 1. Requisitos: .NET SDK versão 6.0
