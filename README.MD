@@ -15,7 +15,7 @@ O link para testar a aplicação e suas funcionalidades é <a href="https://rest
 
 # Testes
 * para testar localmente a aplicação vai precisar:
-1. NET SDK versão 6.0
+1. .NET SDK versão 6.0
 2. Na pasta raiz do projecto executar o comando <b>dotnet run</b> para iniciar a aplicação.
 3. Acessar através do navegador link <a herf="https://localhost:7065"> https://localhost:7065 </a> para testar a aplicação localmente.
 
